@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LA TABLE DE RONIT – קייטרינג ביתי</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Heebo:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f6f6f2; --surface:#ffffff; --ink:#17261f; --muted:#5d6b63; --line:#d9ddd5;
+  --brand:#17261f; --on-brand:#f6f6f2; --brass:#9a7b3f; --placeholder:#e9ece5;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){color-scheme:dark;--bg:#0f1713;--surface:#17221c;--ink:#eef0ea;--muted:#9fb0a5;--line:#2a3830;--brand:#d4b06a;--on-brand:#0f1713;--brass:#d4b06a;--placeholder:#1f2d26}
+}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f1713;--surface:#17221c;--ink:#eef0ea;--muted:#9fb0a5;--line:#2a3830;--brand:#d4b06a;--on-brand:#0f1713;--brass:#d4b06a;--placeholder:#1f2d26}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Heebo',system-ui,sans-serif;font-weight:300;line-height:1.7;font-size:17px}
+h1,h2,h3{font-family:'Frank Ruhl Libre',serif;font-weight:500;margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;min-height:min(78vh,640px);display:grid;place-items:center;text-align:center;padding:72px 24px;color:#f6f6f2;isolation:isolate}
+.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;filter:blur(7px) brightness(.42) saturate(.9);transform:scale(1.08);z-index:-1}
+.hero h1{font-size:clamp(2.2rem,8.5vw,5rem);letter-spacing:.14em;font-weight:400;direction:ltr;line-height:1.1;text-shadow:0 2px 24px rgba(0,0,0,.4)}
+.hero p{max-width:34ch;margin:22px auto 0;color:rgba(246,246,242,.88);font-size:1.12rem}
+.hero .cta{display:inline-block;margin-top:28px;background:#f6f6f2;color:#17261f;padding:12px 32px;text-decoration:none;font-weight:400}
+
+/* Tabs */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);display:flex;justify-content:center;gap:6px;padding:10px 12px}
+.tabs button{background:none;border:0;padding:8px 18px;font-size:1rem;border-bottom:2px solid transparent;color:var(--muted)}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--brass)}
+
+/* Menu */
+main{max-width:980px;margin:0 auto;padding:0 20px 140px}
+.cat{padding-top:56px}
+.cat h2{font-size:2.1rem;padding-bottom:12px;border-bottom:1px solid var(--ink);margin-bottom:8px}
+.dish{display:grid;grid-template-columns:150px 1fr;gap:22px;padding:28px 0;border-bottom:1px solid var(--line)}
+.ph{aspect-ratio:1;background:var(--placeholder);display:grid;place-items:center;color:var(--muted);font-size:.8rem;border:1px dashed var(--line);overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph[data-zoom]{position:relative;cursor:zoom-in}
+.ph[data-zoom]::after{content:"⤢";position:absolute;bottom:6px;inset-inline-end:6px;background:rgba(0,0,0,.55);color:#fff;width:26px;height:26px;display:grid;place-items:center;font-size:.95rem}
+#lb{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.9);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px));cursor:zoom-out}
+#lb.open{display:flex}
+#lb img{max-width:min(94vw,900px);max-height:76vh;object-fit:contain;display:block}
+#lb p{color:#f6f6f2;margin:0;text-align:center;font-family:'Frank Ruhl Libre',serif;font-size:1.15rem}
+#lb .x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));inset-inline-end:16px;color:#f6f6f2;font-size:2rem}
+.ph svg{width:46%;opacity:.55}
+.head{display:flex;align-items:baseline;gap:10px}
+.head h3{font-size:1.4rem;white-space:nowrap}
+.head .dots{flex:1;border-bottom:1px dotted var(--muted);transform:translateY(-4px);min-width:16px}
+.head .price{font-family:'Frank Ruhl Libre',serif;font-size:1.3rem;white-space:nowrap}
+.desc{margin:6px 0 4px;color:var(--muted);max-width:60ch}
+.size{font-size:.92rem;color:var(--brass);font-weight:400}
+.buy{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--surface)}
+.step button{background:none;border:0;width:38px;height:38px;font-size:1.2rem}
+.step span{min-width:30px;text-align:center}
+.add{background:var(--brand);color:var(--on-brand);border:0;padding:9px 22px;font-weight:400;letter-spacing:.02em}
+.add:active{transform:scale(.98)}
+
+/* Cart bar + drawer */
+.bar{position:fixed;inset:auto 0 0 0;z-index:30;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:none;justify-content:center;pointer-events:none}
+.bar.show{display:flex}
+.bar button{pointer-events:auto;background:var(--brand);color:var(--on-brand);border:0;padding:14px 28px;display:flex;gap:18px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.25);min-width:min(420px,100%);justify-content:space-between}
+.veil{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:none}
+.veil.open{display:block}
+aside{position:fixed;top:0;bottom:0;inset-inline-start:0;width:min(440px,100%);background:var(--bg);z-index:50;display:flex;flex-direction:column;transform:translateX(-102%);transition:transform .28s ease;padding-top:env(safe-area-inset-top,0px)}
+aside.open{transform:none}
+@media (prefers-reduced-motion:reduce){aside{transition:none}html{scroll-behavior:auto}}
+aside header{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line)}
+aside header h2{font-size:1.5rem}
+.x{background:none;border:0;font-size:1.6rem;line-height:1}
+.items{flex:1;overflow:auto;padding:6px 22px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);align-items:center}
+.row b{font-weight:500;display:block}
+.row small{color:var(--muted)}
+.empty{color:var(--muted);padding:40px 0;text-align:center}
+.foot{padding:16px 22px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--surface)}
+.foot input,.foot textarea{width:100%;font:inherit;padding:9px 12px;margin-bottom:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.total{display:flex;justify-content:space-between;font-size:1.2rem;font-family:'Frank Ruhl Libre',serif;margin:6px 0 12px}
+.send{display:block;text-align:center;background:var(--brand);color:var(--on-brand);padding:14px;text-decoration:none;font-weight:400}
+.send[aria-disabled="true"]{opacity:.4;pointer-events:none}
+.note{font-size:.82rem;color:var(--muted);margin-top:8px;text-align:center}
+footer{text-align:center;color:var(--muted);padding:40px 20px 120px;font-size:.9rem}
+
+@media (max-width:560px){
+  .dish{grid-template-columns:96px 1fr;gap:14px}
+  .head{flex-wrap:wrap}
+  .head h3{white-space:normal;font-size:1.2rem}
+  .head .dots{display:none}
+  .head .price{margin-inline-start:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <img class="hero-bg" src="images/hero.jpg" alt="">
+  <div>
+    <h1>LA TABLE DE RONIT</h1>
+    <p>קייטרינג ביתי ברמה גבוהה. חומרי גלם מעולים, הכנה מוקפדת, ואוכל שמרגישים בו את האכפתיות.</p>
+    <a class="cta" href="#salads">לתפריט</a>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs" aria-label="קטגוריות"></nav>
+<main id="menu"></main>
+<footer>להזמנות ושאלות: שלחו הזמנה בוואטסאפ והכנות יתחילו מיד לאחר אישור.</footer>
+
+<div class="bar" id="bar"><button id="openCart"><span id="barCount"></span><span id="barTotal"></span></button></div>
+<div id="lb" role="dialog" aria-label="תמונה מוגדלת"><button class="x" aria-label="סגירה">×</button><img id="lbImg" alt=""><p id="lbCap"></p></div>
+<div class="veil" id="veil"></div>
+<aside id="cart" aria-label="ההזמנה שלי" aria-hidden="true">
+  <header><h2>ההזמנה שלי</h2><button class="x" id="closeCart" aria-label="סגירה">×</button></header>
+  <div class="items" id="items"></div>
+  <div class="foot">
+    <input id="name" placeholder="שם מלא" autocomplete="name">
+    <textarea id="notes" rows="2" placeholder="תאריך האירוע, כתובת למשלוח, אלרגיות והערות"></textarea>
+    <div class="total"><span>סה״כ</span><span id="total"></span></div>
+    <a class="send" id="send" aria-disabled="true" target="_blank" rel="noopener">שלח הזמנה בוואטסאפ</a>
+    <div class="note">ההזמנה נפתחת כהודעה מוכנה בוואטסאפ. המחיר הסופי יאושר מול רונית.</div>
+  </div>
+</aside>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+/* ============ CONFIG: נערך בקובץ config.js ============ */
+const CONFIG = window.SITE_CONFIG;
+let sb = null;   // Supabase client
+
+/* ============ STATE ============ */
+const cart = {};          // id -> quantity
+const picks = {};         // id -> quantity chosen on card (before adding)
+let MENU = [];
+const byId = {};
+const $ = s => document.querySelector(s);
+const money = n => n.toLocaleString("he-IL") + " " + CONFIG.currency;
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ============ RENDER ============ */
+const plate = `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="24" cy="24" r="19"/><circle cx="24" cy="24" r="11"/></svg>`;
+
+function renderMenu(){
+  $("#tabs").innerHTML = MENU.map((c,i)=>`<button data-go="${c.id}" class="${i?"":"on"}">${c.title}</button>`).join("");
+  $("#menu").innerHTML = MENU.map(c => `
+    <section class="cat" id="${c.id}">
+      <h2>${c.title}</h2>
+      ${c.dishes.map(d => `
+        <article class="dish">
+          <div class="ph"${(d.img)?` data-zoom="${d.id}" tabindex="0" role="button" aria-label="הגדלת התמונה"`:""}>${(d.img) ? `<img src="${esc(d.img)}" alt="${esc(d.name)}" loading="lazy">` : `${plate}`}</div>
+          <div>
+            <div class="head"><h3>${d.name}</h3><span class="dots"></span><span class="price">${money(d.price)}</span></div>
+            <p class="desc">${d.desc}</p>
+            <div class="size">${d.size}</div>
+            <div class="buy">
+              <div class="step">
+                <button data-pick="${d.id}" data-d="1" aria-label="הוסף כמות">+</button>
+                <span id="q-${d.id}">1</span>
+                <button data-pick="${d.id}" data-d="-1" aria-label="הפחת כמות">−</button>
+              </div>
+              <button class="add" data-add="${d.id}">הוסף להזמנה</button>
+            </div>
+          </div>
+        </article>`).join("")}
+    </section>`).join("");
+}
+
+function renderCart(){
+  const ids = Object.keys(cart);
+  const count = ids.reduce((n,id)=>n+cart[id],0);
+  const total = ids.reduce((n,id)=>n+cart[id]*byId[id].price,0);
+
+  $("#bar").classList.toggle("show", count>0);
+  $("#barCount").textContent = `צפייה בהזמנה (${count})`;
+  $("#barTotal").textContent = money(total);
+  $("#total").textContent = money(total);
+
+  $("#items").innerHTML = ids.length ? ids.map(id => { const d = byId[id]; return `
+    <div class="row">
+      <div><b>${d.name}</b><small>${money(d.price)} ליחידה</small></div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="step">
+          <button data-cart="${id}" data-d="1" aria-label="הוסף">+</button>
+          <span>${cart[id]}</span>
+          <button data-cart="${id}" data-d="-1" aria-label="הפחת">−</button>
+        </div>
+        <span style="min-width:64px;text-align:end">${money(d.price*cart[id])}</span>
+      </div>
+    </div>`; }).join("") : `<div class="empty">ההזמנה ריקה. בחרו מנות מהתפריט.</div>`;
+
+  const lines = ids.map(id => `• ${cart[id]} × ${byId[id].name} – ${money(byId[id].price*cart[id])}`);
+  const name = $("#name").value.trim(), notes = $("#notes").value.trim();
+  const msg = [CONFIG.greeting, "", ...lines, "", `סה״כ: ${money(total)}`];
+  if(name) msg.push(`שם: ${name}`);
+  if(notes) msg.push(`הערות: ${notes}`);
+  const send = $("#send");
+  send.setAttribute("aria-disabled", ids.length ? "false" : "true");
+  send.href = ids.length ? `https://wa.me/${CONFIG.phone}?text=${encodeURIComponent(msg.join("\n"))}` : "#";
+}
+
+/* ============ EVENTS ============ */
+function toggleCart(open){
+  $("#cart").classList.toggle("open", open);
+  $("#veil").classList.toggle("open", open);
+  $("#cart").setAttribute("aria-hidden", String(!open));
+}
+document.addEventListener("click", e => {
+  const t = e.target.closest("button"); if(!t) return;
+  if(t.dataset.pick){ const id=t.dataset.pick; picks[id]=Math.max(1,(picks[id]||1)+ +t.dataset.d); $("#q-"+id).textContent=picks[id]; }
+  else if(t.dataset.add){ const id=t.dataset.add; cart[id]=(cart[id]||0)+(picks[id]||1); picks[id]=1; $("#q-"+id).textContent=1; renderCart(); t.textContent="נוסף ✓"; setTimeout(()=>t.textContent="הוסף להזמנה",1200); }
+  else if(t.dataset.cart){ const id=t.dataset.cart; cart[id]+= +t.dataset.d; if(cart[id]<=0) delete cart[id]; renderCart(); }
+  else if(t.dataset.go){ document.getElementById(t.dataset.go).scrollIntoView(); }
+  else if(t.id==="openCart") toggleCart(true);
+  else if(t.id==="closeCart") toggleCart(false);
+});
+$("#veil").addEventListener("click", () => toggleCart(false));
+function zoom(id){ const d=byId[id]; $("#lbImg").src=d.img; $("#lbImg").alt=d.name; $("#lbCap").textContent=d.name+" · "+d.size; $("#lb").classList.add("open"); }
+document.addEventListener("click", e => { const z=e.target.closest("[data-zoom]"); if(z) zoom(z.dataset.zoom); else if(e.target.closest("#lb")) $("#lb").classList.remove("open"); });
+document.addEventListener("keydown", e => { if(e.key==="Escape") $("#lb").classList.remove("open"); if(e.key==="Enter" && e.target.dataset && e.target.dataset.zoom) zoom(e.target.dataset.zoom); });
+document.addEventListener("keydown", e => { if(e.key==="Escape") toggleCart(false); });
+["#name","#notes"].forEach(s => $(s).addEventListener("input", renderCart));
+
+/* highlight active tab on scroll */
+const io = new IntersectionObserver(es => es.forEach(en => {
+  if(en.isIntersecting) document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.go===en.target.id));
+}), { rootMargin:"-30% 0px -60% 0px" });
+
+/* ============ SUPABASE ============ */
+async function init(){
+  try{
+    sb = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
+    const [c, d] = await Promise.all([
+      sb.from("categories").select("*").order("sort"),
+      sb.from("dishes").select("*").eq("available", true).order("sort")
+    ]);
+    if(c.error || d.error) throw (c.error || d.error);
+    MENU = c.data.map(cat => ({ id:cat.id, title:cat.title, dishes:d.data.filter(r => r.category_id===cat.id).map(r => ({
+      id:r.id, name:r.name, desc:r.description, size:r.size, price:Number(r.price), img:r.image_url })) })).filter(c => c.dishes.length);
+    MENU.forEach(c => c.dishes.forEach(x => byId[x.id] = x));
+    renderMenu(); renderCart();
+    document.querySelectorAll(".cat").forEach(s => io.observe(s));
+  }catch(err){
+    console.error(err);
+    $("#menu").innerHTML = '<p class="empty">לא הצלחנו לטעון את התפריט כרגע. נסו לרענן את הדף.</p>';
+  }
+}
+
+/* שמירת ההזמנה במסד הנתונים בלחיצה על "שלח הזמנה" (הוואטסאפ נפתח בכל מקרה) */
+let lastSig = "";
+async function saveOrder(){
+  const ids = Object.keys(cart);
+  if(!ids.length || !sb) return;
+  const items = ids.map(id => ({ id, name:byId[id].name, qty:cart[id], price:byId[id].price }));
+  const row = {
+    customer_name: $("#name").value.trim() || null,
+    notes: $("#notes").value.trim() || null,
+    items, total: items.reduce((n,i) => n + i.qty*i.price, 0)
+  };
+  const sig = JSON.stringify(row);
+  if(sig === lastSig) return;          // לא לשמור פעמיים את אותה הזמנה
+  lastSig = sig;
+  try{
+    const { error } = await sb.from("orders").insert(row);
+    if(error) throw error;
+  }catch(e){ console.error("order save failed", e); lastSig = ""; }
+}
+$("#send").addEventListener("click", () => { if($("#send").getAttribute("aria-disabled") !== "true") saveOrder(); });
+
+init();
+</script>
+</body>
+</html>

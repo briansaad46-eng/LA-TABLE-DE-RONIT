@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ניהול – LA TABLE DE RONIT</title>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Heebo:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--bg:#f6f6f2;--surface:#fff;--ink:#17261f;--muted:#5d6b63;--line:#d9ddd5;--brand:#17261f;--on-brand:#f6f6f2;--brass:#9a7b3f;--danger:#a33a3a}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0f1713;--surface:#17221c;--ink:#eef0ea;--muted:#9fb0a5;--line:#2a3830;--brand:#d4b06a;--on-brand:#0f1713;--brass:#d4b06a;--danger:#e07a7a}}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Heebo',system-ui,sans-serif;font-weight:300;line-height:1.6}
+h1,h2,h3{font-family:'Frank Ruhl Libre',serif;font-weight:500;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--line);background:var(--surface);margin-top:4px}
+label{display:block;font-size:.9rem;color:var(--muted);margin-bottom:10px}
+.btn{background:var(--brand);color:var(--on-brand);border:0;padding:9px 20px;font-weight:400}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:none;color:var(--danger);border:1px solid var(--danger)}
+.wrap{max-width:980px;margin:0 auto;padding:20px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:18px}
+.tabs{display:flex;gap:6px;margin-bottom:18px}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 16px;color:var(--muted)}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--brass)}
+.card{background:var(--surface);border:1px solid var(--line);padding:16px;margin-bottom:12px}
+.row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:1px 10px;border:1px solid var(--line);font-size:.8rem}
+.pill.new{border-color:var(--brass);color:var(--brass)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dish{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center}
+.dish img,.dish .noimg{width:64px;height:64px;object-fit:cover;background:var(--line)}
+.off{opacity:.5}
+#login{max-width:360px;margin:12vh auto}
+dialog{border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:22px;width:min(560px,94vw);max-height:92vh}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+.err{color:var(--danger);min-height:1.4em}
+@media (max-width:560px){.grid2{grid-template-columns:1fr}.dish{grid-template-columns:52px 1fr}.dish>:last-child{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="login" hidden>
+  <h1>כניסה לניהול</h1>
+  <p class="muted">LA TABLE DE RONIT</p>
+  <label>אימייל<input id="email" type="email" autocomplete="username"></label>
+  <label>סיסמה<input id="pass" type="password" autocomplete="current-password"></label>
+  <p class="err" id="loginErr"></p>
+  <button class="btn" id="loginBtn">כניסה</button>
+</section>
+
+<section id="app" hidden>
+  <div class="top"><h1>ניהול LA TABLE DE RONIT</h1><button class="btn ghost" id="logout">יציאה</button></div>
+  <div class="tabs"><button data-tab="orders" class="on">הזמנות</button><button data-tab="menu">תפריט</button></div>
+
+  <div id="tab-orders">
+    <div class="row" style="margin-bottom:12px"><div class="muted" id="ordersInfo"></div><button class="btn ghost" id="refresh">רענון</button></div>
+    <div id="orders"></div>
+  </div>
+
+  <div id="tab-menu" hidden>
+    <div class="row" style="margin-bottom:12px"><div class="muted">התפריט שמוצג באתר. מנה כבויה לא תוצג ללקוחות.</div><button class="btn" id="newDish">+ מנה חדשה</button></div>
+    <div id="dishes"></div>
+  </div>
+</section>
+
+<dialog id="dlg">
+  <h2 id="dlgTitle">מנה</h2>
+  <form method="dialog" id="form" style="margin-top:14px">
+    <div class="grid2">
+      <label>שם המנה<input id="f-name" required></label>
+      <label>קטגוריה<select id="f-cat"></select></label>
+    </div>
+    <label>תיאור<textarea id="f-desc" rows="3"></textarea></label>
+    <div class="grid2">
+      <label>גודל וכמות סועדים<input id="f-size"></label>
+      <label>מחיר (₪)<input id="f-price" type="number" min="0" step="1" required></label>
+    </div>
+    <div class="grid2">
+      <label>סדר הצגה (מספר קטן = למעלה)<input id="f-sort" type="number" step="1" value="0"></label>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:22px"><input id="f-av" type="checkbox" style="width:auto;margin:0" checked> מוצגת באתר</label>
+    </div>
+    <label>תמונה<input id="f-file" type="file" accept="image/*"></label>
+    <img id="f-prev" alt="" style="display:none;width:120px;height:120px;object-fit:cover;margin-bottom:10px">
+    <p class="err" id="formErr"></p>
+    <div class="row">
+      <div style="display:flex;gap:8px"><button class="btn" id="saveBtn" type="button">שמירה</button><button class="btn ghost" id="cancelBtn" type="button">ביטול</button></div>
+      <button class="btn danger" id="delBtn" type="button">מחיקה</button>
+    </div>
+  </form>
+</dialog>
+
+</div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const C = window.SITE_CONFIG;
+const sb = supabase.createClient(C.supabaseUrl, C.supabaseKey);
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money = n => Number(n).toLocaleString("he-IL") + " " + C.currency;
+const STATUS = { new:"חדשה", confirmed:"אושרה", done:"סופקה", cancelled:"בוטלה" };
+let cats = [], dishes = [], editing = null, timer = null;
+
+/* ---------- Auth ---------- */
+async function boot(){
+  const { data:{ session } } = await sb.auth.getSession();
+  show(!!session);
+}
+function show(logged){
+  $("#login").hidden = logged; $("#app").hidden = !logged;
+  clearInterval(timer);
+  if(logged){ loadOrders(); loadMenu(); timer = setInterval(loadOrders, 60000); }
+}
+$("#loginBtn").onclick = async () => {
+  $("#loginErr").textContent = "";
+  const { error } = await sb.auth.signInWithPassword({ email:$("#email").value.trim(), password:$("#pass").value });
+  if(error) $("#loginErr").textContent = "אימייל או סיסמה שגויים"; else show(true);
+};
+$("#pass").addEventListener("keydown", e => { if(e.key==="Enter") $("#loginBtn").click(); });
+$("#logout").onclick = async () => { await sb.auth.signOut(); show(false); };
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".tabs button").forEach(x => x.classList.toggle("on", x===b));
+  $("#tab-orders").hidden = b.dataset.tab !== "orders";
+  $("#tab-menu").hidden = b.dataset.tab !== "menu";
+});
+
+/* ---------- Orders ---------- */
+async function loadOrders(){
+  const { data, error } = await sb.from("orders").select("*").order("created_at", { ascending:false }).limit(100);
+  if(error){ $("#orders").innerHTML = `<p class="err">שגיאה בטעינת הזמנות: ${esc(error.message)}</p>`; return; }
+  const open = data.filter(o => o.status==="new").length;
+  $("#ordersInfo").textContent = `${data.length} הזמנות אחרונות, ${open} חדשות`;
+  $("#orders").innerHTML = data.length ? data.map(o => `
+    <div class="card">
+      <div class="row">
+        <div><b>${esc(o.customer_name || "ללא שם")}</b> <span class="pill ${o.status}">${STATUS[o.status]}</span>
+          <div class="muted">${new Date(o.created_at).toLocaleString("he-IL")}</div></div>
+        <div style="font-family:'Frank Ruhl Libre',serif;font-size:1.25rem">${money(o.total)}</div>
+      </div>
+      <ul style="margin:10px 0 6px;padding-inline-start:20px">${(o.items||[]).map(i => `<li>${esc(i.qty)} × ${esc(i.name)} <span class="muted">(${money(i.price*i.qty)})</span></li>`).join("")}</ul>
+      ${o.notes ? `<div class="muted">הערות: ${esc(o.notes)}</div>` : ""}
+      <div class="row" style="margin-top:10px">
+        <select data-status="${o.id}" style="width:auto">${Object.entries(STATUS).map(([k,v]) => `<option value="${k}" ${k===o.status?"selected":""}>${v}</option>`).join("")}</select>
+        <button class="btn danger" data-delorder="${o.id}">מחיקה</button>
+      </div>
+    </div>`).join("") : `<p class="muted">אין הזמנות עדיין.</p>`;
+}
+$("#refresh").onclick = loadOrders;
+$("#orders").addEventListener("change", async e => {
+  const id = e.target.dataset.status; if(!id) return;
+  const { error } = await sb.from("orders").update({ status:e.target.value }).eq("id", id);
+  if(error) alert("השמירה נכשלה: " + error.message); loadOrders();
+});
+$("#orders").addEventListener("click", async e => {
+  const id = e.target.dataset.delorder; if(!id || !confirm("למחוק את ההזמנה לצמיתות?")) return;
+  const { error } = await sb.from("orders").delete().eq("id", id);
+  if(error) alert("המחיקה נכשלה: " + error.message); loadOrders();
+});
+
+/* ---------- Menu ---------- */
+async function loadMenu(){
+  const [c, d] = await Promise.all([ sb.from("categories").select("*").order("sort"), sb.from("dishes").select("*").order("sort") ]);
+  if(c.error || d.error){ $("#dishes").innerHTML = `<p class="err">שגיאה בטעינת התפריט</p>`; return; }
+  cats = c.data; dishes = d.data;
+  $("#f-cat").innerHTML = cats.map(x => `<option value="${esc(x.id)}">${esc(x.title)}</option>`).join("");
+  $("#dishes").innerHTML = cats.map(cat => `
+    <h2 style="margin:22px 0 10px">${esc(cat.title)}</h2>
+    ${dishes.filter(x => x.category_id===cat.id).map(x => `
+      <div class="card dish ${x.available?"":"off"}">
+        ${x.image_url ? `<img src="${esc(x.image_url)}" alt="">` : `<div class="noimg"></div>`}
+        <div><b>${esc(x.name)}</b> ${x.available?"":'<span class="pill">מוסתרת</span>'}<div class="muted">${esc(x.size)} · ${money(x.price)}</div></div>
+        <button class="btn ghost" data-edit="${esc(x.id)}">עריכה</button>
+      </div>`).join("") || `<p class="muted">אין מנות בקטגוריה.</p>`}`).join("");
+}
+function openForm(d){
+  editing = d || null;
+  $("#dlgTitle").textContent = d ? "עריכת מנה" : "מנה חדשה";
+  $("#f-name").value = d?.name || ""; $("#f-cat").value = d?.category_id || cats[0]?.id;
+  $("#f-desc").value = d?.description || ""; $("#f-size").value = d?.size || "";
+  $("#f-price").value = d?.price ?? ""; $("#f-sort").value = d?.sort ?? 0; $("#f-av").checked = d ? d.available : true;
+  $("#f-file").value = ""; $("#formErr").textContent = "";
+  const p = $("#f-prev"); p.style.display = d?.image_url ? "block" : "none"; p.src = d?.image_url || "";
+  $("#delBtn").style.display = d ? "" : "none";
+  $("#dlg").showModal();
+}
+$("#newDish").onclick = () => openForm(null);
+$("#dishes").addEventListener("click", e => { const id = e.target.dataset.edit; if(id) openForm(dishes.find(x => x.id===id)); });
+$("#cancelBtn").onclick = () => $("#dlg").close();
+
+// מקטין תמונה לפני העלאה (עד 1200px, JPEG) כדי שהאתר יישאר מהיר
+function shrink(file){
+  return new Promise((res, rej) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const k = Math.min(1, 1200 / Math.max(img.width, img.height));
+      const cv = document.createElement("canvas"); cv.width = Math.round(img.width*k); cv.height = Math.round(img.height*k);
+      cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(url); cv.toBlob(b => b ? res(b) : rej(new Error("המרת התמונה נכשלה")), "image/jpeg", .82);
+    };
+    img.onerror = () => rej(new Error("קובץ התמונה לא נקרא")); img.src = url;
+  });
+}
+
+$("#saveBtn").onclick = async () => {
+  const err = $("#formErr"); err.textContent = "";
+  const name = $("#f-name").value.trim(), price = Number($("#f-price").value);
+  if(!name || isNaN(price) || price < 0){ err.textContent = "נא למלא שם ומחיר תקינים"; return; }
+  const btn = $("#saveBtn"); btn.disabled = true;
+  try{
+    const row = { name, category_id:$("#f-cat").value, description:$("#f-desc").value.trim(), size:$("#f-size").value.trim(),
+      price, sort:Number($("#f-sort").value)||0, available:$("#f-av").checked };
+    const f = $("#f-file").files[0];
+    if(f){
+      const blob = await shrink(f);
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.jpg`;
+      const up = await sb.storage.from("dish-images").upload(path, blob, { contentType:"image/jpeg", cacheControl:"31536000" });
+      if(up.error) throw up.error;
+      row.image_url = sb.storage.from("dish-images").getPublicUrl(path).data.publicUrl;
+    }
+    const q = editing ? sb.from("dishes").update(row).eq("id", editing.id) : sb.from("dishes").insert(row);
+    const { error } = await q; if(error) throw error;
+    $("#dlg").close(); await loadMenu();
+  }catch(e){ err.textContent = "השמירה נכשלה: " + (e.message || e); }
+  btn.disabled = false;
+};
+$("#delBtn").onclick = async () => {
+  if(!editing || !confirm(`למחוק את "${editing.name}" מהתפריט? אפשר גם רק להסתיר אותה.`)) return;
+  const { error } = await sb.from("dishes").delete().eq("id", editing.id);
+  if(error){ $("#formErr").textContent = "המחיקה נכשלה: " + error.message; return; }
+  $("#dlg").close(); loadMenu();
+};
+
+$("#form").addEventListener("submit", e => { e.preventDefault(); $("#saveBtn").click(); });
+
+boot();
+</script>
+</body>
+</html>
