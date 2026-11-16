@@ -132,7 +132,10 @@ footer{text-align:center;color:var(--muted);padding:40px 20px 120px;font-size:.9
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 /* ============ CONFIG: נערך בקובץ config.js ============ */
-const CONFIG = window.SITE_CONFIG;
+const CONFIG = Object.assign({
+  currency: "₪", phone: "972525506094",
+  greeting: "שלום רונית, אני מעוניין/ת להזמין מ-LA TABLE DE RONIT:"
+}, window.SITE_CONFIG || {});   // ברירות מחדל, כדי שהאתר יעבוד גם אם config.js לא נטען
 let sb = null;   // Supabase client
 
 /* ============ STATE ============ */
@@ -232,7 +235,16 @@ const io = new IntersectionObserver(es => es.forEach(en => {
   if(en.isIntersecting) document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.go===en.target.id));
 }), { rootMargin:"-30% 0px -60% 0px" });
 
+/* ============ תפריט גיבוי: מוצג אם Supabase לא זמין או שהטבלה ריקה ============ */
+const FALLBACK_MENU = [{"id": "salads", "title": "סלטים", "dishes": [{"id": "s1", "name": "קפרזה מוצרלה וארוגולה", "desc": "כדורי מוצרלה טריים, עגבניות שרי בשלות, ארוגולה ועלים אדומים, שמן זית כתית ופלפל שחור גרוס.", "size": "קערה גדולה, מספיקה ל-6-8 סועדים", "price": 140, "img": "s1.jpg"}, {"id": "s2", "name": "חלומי פריך וירוקים", "desc": "קוביות חלומי מוקפצות עד הזהבה על עלים מתולתלים, עגבנייה ומלפפון, ברוטב יוגורט-לימון.", "size": "קערה גדולה, מספיקה ל-4-6 סועדים", "price": 120, "img": "s2.jpg"}, {"id": "s3", "name": "טונה, צנונית ועשבי תיבול", "desc": "נתחי טונה בשמן זית, צנוניות פריכות, מלפפון ופטרוזיליה ברוטב שמנת חמוצה קליל.", "size": "קערה גדולה, מספיקה ל-4-6 סועדים", "price": 130, "img": "s3.jpg"}, {"id": "s4", "name": "סלט ירוק עם פלפל צהוב", "desc": "חסות מתולתלת פריכה, עגבניות, מלפפון ופלפל צהוב מתוק ברוטב לימון ושמן זית.", "size": "קערה גדולה, מספיקה ל-6-8 סועדים", "price": 90, "img": "s4.jpg"}, {"id": "s5", "name": "סלט סלרי ופקאן מסוכר", "desc": "עלי וגבעולי סלרי קצוצים דק עם פקאן מסוכר וויניגרט חמצמץ.", "size": "קערה גדולה, מספיקה ל-4-6 סועדים", "price": 110, "img": "s5.jpg"}, {"id": "s6", "name": "פלטת קרודיטה ביצים ואבוקדו", "desc": "אבוקדו פרוס, ביצים קשות, עגבניות שרי צהובות ואדומות, צנוניות, פטריות, זיתים ופלפלים חריפים קטנים.", "size": "פלטה גדולה, מספיקה ל-8-10 סועדים", "price": 170, "img": "s6.jpg"}]}, {"id": "mains", "title": "מנות עיקריות", "dishes": [{"id": "m1", "name": "קרפצ׳יו סלמון וצ׳ילי", "desc": "פרוסות סלמון טרי, צנונית, שמן זית כתית, צ׳ילי טרי, בצל ירוק וכוסברה.", "size": "מגש של 1 ק״ג, מספיק ל-6-8 סועדים", "price": 260, "img": "m1.jpg"}, {"id": "m2", "name": "שיפודי ירקות צלויים", "desc": "בטטה, קישוא, פלפלים ובצל סגול צלויים בתנור עם תבלינים. 20 שיפודים במגש.", "size": "מגש של 20 שיפודים, מספיק ל-8-10 סועדים", "price": 190, "img": "m2.jpg"}, {"id": "m3", "name": "פסטה פרפלה בשמנת ועשבי תיבול", "desc": "פרפלה אל דנטה ברוטב שמנת קטיפתי עם עשבי תיבול טריים.", "size": "תבנית גדולה, מספיקה ל-6-8 סועדים", "price": 120, "img": "m3.jpg"}, {"id": "m4", "name": "סושי סלמון ואבוקדו", "desc": "רולים עם סלמון, אבוקדו ומלפפון באורז סושי. מוגשים עם סויה, ג׳ינג׳ר וואסבי.", "size": "2 מגשים, 48 יחידות, מספיק ל-6-8 סועדים", "price": 240, "img": "m4.jpg"}, {"id": "m5", "name": "ירקות קלויים בתנור", "desc": "תירס, עגבניות, קישוא ובצל סגול צלויים עם שמן זית, מלח גס ופלפל שחור.", "size": "תבנית גדולה, מספיקה ל-6-8 סועדים", "price": 130, "img": "m5.jpg"}, {"id": "m6", "name": "פלפלים צלויים בפסטו", "desc": "חצאי פלפלים אדומים וצהובים צלויים, מצופים בפסטו עשבים וקלויים עד הקרמל.", "size": "תבנית גדולה, מספיקה ל-6-8 סועדים", "price": 140, "img": "m6.jpg"}, {"id": "m7", "name": "קישואים ובטטה צלויים", "desc": "פרוסות קישוא ובטטה בתיבול חם, צלויות בתנור עד שמשתבשות בקצוות.", "size": "מגש גדול, מספיק ל-8-10 סועדים", "price": 120, "img": "m7.jpg"}, {"id": "m8", "name": "סלמון מעושן ומלפפון", "desc": "סלמון מעושן פרוס דק על סרטי מלפפון, עם נבטים ופלפל שחור.", "size": "קערת הגשה, מספיקה ל-6-8 סועדים", "price": 190, "img": "m8.jpg"}]}, {"id": "pastry", "title": "פטיסרי", "dishes": [{"id": "p1", "name": "טארט פיסטוק", "desc": "בצק פריך וקרם פיסטוק עשיר, מסוכך בפיסטוק קלוף קצוץ.", "size": "טארט בקוטר 26 ס״מ, 10-12 מנות", "price": 190, "img": "p1.jpg"}, {"id": "p2", "name": "פאי לימון ומרנג", "desc": "בסיס חמאתי, קרם לימון חמצמץ ומרנג שרוף קלות. 12 חתיכות במגש.", "size": "מגש של 12 חתיכות", "price": 150, "img": "p2.jpg"}, {"id": "p3", "name": "עוגת גבינה ותותים", "desc": "עוגת גבינה אפויה בטקסטורה קטיפתית, שכבת שמנת וניל ותותים טריים.", "size": "עוגה בקוטר 24 ס״מ, 12 מנות", "price": 180, "img": "p3.jpg"}, {"id": "p4", "name": "סופגניות אישיות בקרם פירות", "desc": "סופגניות אפויות מטוגנות בסוכר גרגרי, עם קישוט קרם ורוד.", "size": "12 יחידות", "price": 110, "img": "p4.jpg"}, {"id": "p5", "name": "עוגת שכבות וניל ותות", "desc": "שכבות עוגת וניל רכה עם קרם שמנת, בעיצוב נייקד, ותותים טריים.", "size": "עוגה בקוטר 20 ס״מ, 10-12 מנות", "price": 200, "img": "p5.jpg"}, {"id": "p6", "name": "צ׳ורוס בסוכר", "desc": "צ׳ורוס טריים וזהובים, מצופים בסוכר גרגרי.", "size": "20 יחידות", "price": 70, "img": "p6.jpg"}]}];
+
 /* ============ SUPABASE ============ */
+function useMenu(m){
+  MENU = m;
+  MENU.forEach(c => c.dishes.forEach(x => byId[x.id] = x));
+  renderMenu(); renderCart();
+  document.querySelectorAll(".cat").forEach(s => io.observe(s));
+}
 async function init(){
   try{
     sb = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
@@ -241,14 +253,13 @@ async function init(){
       sb.from("dishes").select("*").eq("available", true).order("sort")
     ]);
     if(c.error || d.error) throw (c.error || d.error);
-    MENU = c.data.map(cat => ({ id:cat.id, title:cat.title, dishes:d.data.filter(r => r.category_id===cat.id).map(r => ({
+    const m = c.data.map(cat => ({ id:cat.id, title:cat.title, dishes:d.data.filter(r => r.category_id===cat.id).map(r => ({
       id:r.id, name:r.name, desc:r.description, size:r.size, price:Number(r.price), img:r.image_url })) })).filter(c => c.dishes.length);
-    MENU.forEach(c => c.dishes.forEach(x => byId[x.id] = x));
-    renderMenu(); renderCart();
-    document.querySelectorAll(".cat").forEach(s => io.observe(s));
+    if(!m.length){ console.warn("Supabase החזיר תפריט ריק, מוצג תפריט הגיבוי. יש להריץ את schema.sql."); useMenu(FALLBACK_MENU); }
+    else useMenu(m);
   }catch(err){
-    console.error(err);
-    $("#menu").innerHTML = '<p class="empty">לא הצלחנו לטעון את התפריט כרגע. נסו לרענן את הדף.</p>';
+    console.error("טעינת התפריט מ-Supabase נכשלה, מוצג תפריט הגיבוי:", err);
+    useMenu(FALLBACK_MENU);
   }
 }
 
